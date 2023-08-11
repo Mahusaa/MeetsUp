@@ -12,7 +12,7 @@ interface MeetupItemProps {
 const MeetupItem: React.FC<MeetupItemProps> = ({ image, title, address }) => {
     return (
         <li >
-            <Card >
+            <Card className="mx-80 my-5 px-5">
                 <CardHeader className="text-center">
                     <CardTitle>{title}</CardTitle>
                     <CardDescription>{address}</CardDescription>
