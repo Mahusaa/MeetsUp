@@ -1,22 +1,32 @@
 import MeetsUpList from "@/components/meetsup/MeetsUpList";
+import { MongoClient } from "mongodb"
+import { ReactElement } from "react";
 
-const DUMMY_MEETSUP = [
-  {
-    id: "m1",
-    title: "First Meetup",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/330px-Image_created_with_a_mobile_phone.png",
-    address: "some address"
-  },
-  {
-    id: "m2",
-    title: "Second Meetup",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/330px-Image_created_with_a_mobile_phone.png",
-    address: "some address in jakarta"
-  }
-]
+interface Meetup {
+  _id: { toString(): string};
+  title: string;
+  image: string;
+  address: string
+}
 
-export default function HomePage() {
-  return (
-    <MeetsUpList meetsup={DUMMY_MEETSUP}/>
+export default async function HomePage(): Promise<ReactElement> {
+  const data = await getData();
+  const meetup = data.map((meet: Meetup) => ({
+    id: meet._id.toString(),
+    title: meet.title,
+    image: meet.image,
+    address: meet.address,
+  }));
+  return <MeetsUpList meetsup={meetup} />;
+}
+
+async function getData(): Promise<Meetup[]> {
+  const client = await MongoClient.connect(
+    'mongodb+srv://hakaro375:YOgBw04zhHYBXAdT@mycluster.feuwh5k.mongodb.net/meetsup?retryWrites=true&w=majority'
   );
+  const db = client.db();
+  const meetupsCollection = db.collection<Meetup>('meetsup');
+  const meetups = await meetupsCollection.find().toArray();
+  client.close();
+  return meetups;
 }

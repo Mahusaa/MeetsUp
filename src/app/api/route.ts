@@ -10,9 +10,6 @@ export async function POST(req: Request, res: Response) {
     // Use the 'db' object to work with the database collections
     const meetsupCollection = db.collection('meetsup');
     const result = await meetsupCollection.insertOne(data);
-
-    console.log(result);
-    console.log("yuhu")
     await client.close();
     return NextResponse.json(result);
 }
